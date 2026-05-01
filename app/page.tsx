@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import Services from "@/components/Services";
-import LocationMap from "@/components/LocationMap";
+import LocationMapWrapper from "@/components/LocationMapWrapper";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -12,7 +12,7 @@ export default function Home() {
       <Hero />
       <Features />
       <Services />
-      <LocationMap />
+      <LocationMapWrapper />
       <Footer />
     </main>
   );

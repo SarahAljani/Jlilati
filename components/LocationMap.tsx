@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Custom CSS for the flashing neon marker
+// Custom CSS
 const flashingMarkerStyle = `
   .flashing-marker {
     width: 12px;
@@ -31,15 +31,11 @@ const flashingMarkerStyle = `
   }
 `;
 
-const LocationMap = () => {
+export default function LocationMap() {
   const position: [number, number] = [33.483, 36.353];
-  const [icon, setIcon] = useState(null);
-  const [isMounted, setIsMounted] = useState(false);
+  const [icon, setIcon] = useState<any>(null);
 
-  // Ensure component runs only in browser
   useEffect(() => {
-    setIsMounted(true);
-
     const L = require("leaflet");
 
     const customIcon = L.divIcon({
@@ -52,48 +48,41 @@ const LocationMap = () => {
     setIcon(customIcon);
   }, []);
 
-  // Prevent SSR rendering
-  if (!isMounted) return null;
-
   return (
     <section className="py-24 bg-white overflow-hidden">
       <style>{flashingMarkerStyle}</style>
 
       <div className="container mx-auto px-6 md:px-16">
-        <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6 text-right">
-          <div className="order-2 md:order-1">
-            <div className="px-4 py-1 border border-teal-500/30 rounded-full text-teal-400 font-mono text-xs mb-4 inline-block">
-              LIVE ROAD MAP: DAMASCUS, SYRIA
-            </div>
-
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-              موقعنا في دمشق
-            </h2>
-
-            <p className="text-gray-600 text-lg max-w-xl">
-              نحن متواجدون في قلب العاصمة لنضمن أسرع استجابة لبلاغات الأعطال في
-              مطعمك.
-            </p>
+        <div className="mb-12 text-right">
+          <div className="px-4 py-1 border border-teal-500/30 rounded-full text-teal-400 font-mono text-xs mb-4 inline-block">
+            LIVE ROAD MAP: DAMASCUS, SYRIA
           </div>
+
+          <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
+            موقعنا في دمشق
+          </h2>
+
+          <p className="text-gray-600 text-lg max-w-xl">
+            نحن متواجدون في قلب العاصمة لنضمن أسرع استجابة لبلاغات الأعطال في
+            مطعمك.
+          </p>
         </div>
 
-        {/* Map Container */}
         <div className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-teal-500 to-blue-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-700"></div>
 
-          <div className="relative bg-white rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl h-[350px] md:h-[400px] z-10">
+          <div className="relative bg-white rounded-[2.5rem] overflow-hidden shadow-2xl h-[400px] z-10">
             <MapContainer
               center={position}
               zoom={15}
               scrollWheelZoom={false}
-              style={{ height: "100%", width: "100%", background: "#fff" }}
+              style={{ height: "100%", width: "100%" }}
             >
               <TileLayer
                 attribution="&copy; CartoDB"
                 url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
               />
 
-              {/* Marker */}
               {icon && <Marker position={position} icon={icon} />}
             </MapContainer>
           </div>
@@ -101,6 +90,4 @@ const LocationMap = () => {
       </div>
     </section>
   );
-};
-
-export default LocationMap;
+}
