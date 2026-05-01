@@ -32,7 +32,7 @@ const flashingMarkerStyle = `
 `;
 
 const LocationMap = () => {
-  const position = [33.483, 36.353];
+  const position: [number, number] = [33.483, 36.353];
   const [icon, setIcon] = useState(null);
   const [isMounted, setIsMounted] = useState(false);
 
