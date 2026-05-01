@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
-import L from "leaflet";
+
+import React, { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 // Custom CSS for the flashing neon marker
@@ -31,32 +31,45 @@ const flashingMarkerStyle = `
   }
 `;
 
-// Create the custom neon icon
-const neonIcon =
-  typeof window !== "undefined"
-    ? L.divIcon({
-        className: "custom-div-icon",
-        html: `<div class="flashing-marker"></div>`,
-        iconSize: [12, 12],
-        iconAnchor: [6, 6],
-      })
-    : null;
-
 const LocationMap = () => {
-  const position: [number, number] = [33.483, 36.353]; // Damascus Coordinates
+  const position = [33.483, 36.353];
+  const [icon, setIcon] = useState(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Ensure component runs only in browser
+  useEffect(() => {
+    setIsMounted(true);
+
+    const L = require("leaflet");
+
+    const customIcon = L.divIcon({
+      className: "custom-div-icon",
+      html: `<div class="flashing-marker"></div>`,
+      iconSize: [12, 12],
+      iconAnchor: [6, 6],
+    });
+
+    setIcon(customIcon);
+  }, []);
+
+  // Prevent SSR rendering
+  if (!isMounted) return null;
 
   return (
     <section className="py-24 bg-white overflow-hidden">
       <style>{flashingMarkerStyle}</style>
+
       <div className="container mx-auto px-6 md:px-16">
         <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6 text-right">
           <div className="order-2 md:order-1">
             <div className="px-4 py-1 border border-teal-500/30 rounded-full text-teal-400 font-mono text-xs mb-4 inline-block">
               LIVE ROAD MAP: DAMASCUS, SYRIA
             </div>
+
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
               موقعنا في دمشق
             </h2>
+
             <p className="text-gray-600 text-lg max-w-xl">
               نحن متواجدون في قلب العاصمة لنضمن أسرع استجابة لبلاغات الأعطال في
               مطعمك.
@@ -64,7 +77,7 @@ const LocationMap = () => {
           </div>
         </div>
 
-        {/* Map UI with Glow Container */}
+        {/* Map Container */}
         <div className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-teal-500 to-blue-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-700"></div>
 
@@ -75,14 +88,13 @@ const LocationMap = () => {
               scrollWheelZoom={false}
               style={{ height: "100%", width: "100%", background: "#fff" }}
             >
-              {/* Neon "Dark Matter" Road Tiles */}
               <TileLayer
                 attribution="&copy; CartoDB"
                 url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
               />
 
-              {/* The Flashing Point */}
-              {neonIcon && <Marker position={position} icon={neonIcon} />}
+              {/* Marker */}
+              {icon && <Marker position={position} icon={icon} />}
             </MapContainer>
           </div>
         </div>
